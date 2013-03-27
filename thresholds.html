@@ -1,0 +1,233 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head>
+  <meta charset='utf-8' /> 
+  <title>charts</title>
+  <style type='text/css'>
+
+    body {margin:0; padding: 0;font-size: 100%; font-family: Helvetica, Arial, 'san-serif';}
+        
+    #container {width: 95%;padding: 2.5% ;background: #ccc url('/images/l_dark.png'); overflow: auto;}
+    
+
+
+    .sensor_thresholds {width: 43.5%;margin: 0 1.5% 1.5% 0; padding: 2.5% 2.5% 10%;background: #eee url('/images/l.png');float:left;}
+
+    @media screen and (max-width: 700px) {
+    .sensor_thresholds {width: 95%;margin: 0 0 1.5%; padding: 2.5% 2.5% 10%;float:none;}
+    }
+
+    .sensor_thresholds h2 {font-size: .8em; margin: 0;}
+    .sensor_thresholds .threshold,
+    .sensor_thresholds .controller {margin: 16px 0;}
+
+    .sensor_thresholds input {width: 50%; margin:0; padding: 0;display: block; float:left;border: 0; font-weight: bold;background-color:transparent;}
+    .sensor_thresholds .controller_slider input {padding: 0 0 10px;}
+    .sensor_thresholds input.below {text-align: left;}
+    .sensor_thresholds input.above {text-align: right;}
+    .sensor_thresholds .slider {clear:both;}
+
+
+
+    /* Slider Colors */
+    .sensor_thresholds .moisture_slider .ui-slider-range {background: #05AFF7;}
+    .sensor_thresholds .temperature_slider .ui-slider-range {
+      background: #d8fbff;
+      background: -moz-linear-gradient(left, #d8fbff 0%, #2cc5e0 26%, #c1ea59 52%, #f28500 79%, #e85719 99%);
+      background: -webkit-gradient(linear, left top, right top, color-stop(0%,#d8fbff), color-stop(26%,#2cc5e0), color-stop(52%,#c1ea59), color-stop(79%,#f28500), color-stop(99%,#e85719));
+      background: -webkit-linear-gradient(left, #d8fbff 0%,#2cc5e0 26%,#c1ea59 52%,#f28500 79%,#e85719 99%);
+      background: -o-linear-gradient(left, #d8fbff 0%,#2cc5e0 26%,#c1ea59 52%,#f28500 79%,#e85719 99%);
+      background: -ms-linear-gradient(left, #d8fbff 0%,#2cc5e0 26%,#c1ea59 52%,#f28500 79%,#e85719 99%);
+      background: linear-gradient(to right, #d8fbff 0%,#2cc5e0 26%,#c1ea59 52%,#f28500 79%,#e85719 99%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d8fbff', endColorstr='#e85719',GradientType=1 );
+    }
+
+    .sensor_thresholds .temperature_slider .ui-slider-range {
+      background: #108fef;
+background: -moz-linear-gradient(left, #108fef 0%, #5ebde0 35%, #ef6610 70%, #f45b02 76%, #ea3219 100%);
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,#108fef), color-stop(35%,#5ebde0), color-stop(70%,#ef6610), color-stop(76%,#f45b02), color-stop(100%,#ea3219));
+background: -webkit-linear-gradient(left, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
+background: -o-linear-gradient(left, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
+background: -ms-linear-gradient(left, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
+background: linear-gradient(to right, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#108fef', endColorstr='#ea3219',GradientType=1 );
+
+    }
+    .sensor_thresholds .temperature_slider {background: rgba(255, 255, 255, 0.95);}
+    
+
+    .sensor_thresholds .salinity_slider {background: #fff;}
+    .sensor_thresholds .salinity_slider .ui-slider-range {background: #ccc url('/images/salt.png') 0 4px;}
+
+    /* Handle Icons */
+    .sensor_thresholds .ui-slider-handle {cursor: move;}
+    .sensor_thresholds .controller_slider .ui-slider-handle {
+      top: -10px;
+      margin-left: -20px;
+    }
+    .sensor_thresholds .controller_slider .ui-slider-handle {background: transparent url('/images/controller_drop.png') no-repeat;}
+    .sensor_thresholds .controller_slider .ui-slider-handle.locked {background: transparent url('/images/controller_drop.png') no-repeat;}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below {background: transparent url('/images/flag_l.png') no-repeat;}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above {background: transparent url('/images/flag_r.png') no-repeat;}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below.on {background: transparent url('/images/flag_l_o.png') no-repeat;}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above.on {background: transparent url('/images/flag_r_o.png') no-repeat;}
+
+    .sensor_thresholds .controller_slider .range_key {background: #1CC950;height: 12px;text-indent: -9999px; overflow: hidden;}
+
+    /* Range Key */
+    .range_key_container {position:relative;border:1px solid #ccc;height: 100px;}
+    .range_key {background: #05AFF7;height: 10px;font-size: 8px;color: #fff;text-align:center;}
+
+    /* Value Marker */
+    .value_marker {width:40px;height:20px;padding:10px 0 0; font-size: 16px;text-align:center;font-weight: bold;background: url('/images/pinpoint3.png');}
+
+  </style>
+
+  <link rel="stylesheet" href="css/jqueryui.css" />
+  <script type='text/javascript' src='/javascripts/inheritence.js'></script>
+  <script type='text/javascript' src='/javascripts/jquery.js'></script>
+  <script type='text/javascript' src='/javascripts/jquery-ui.js'></script>
+  <script type='text/javascript' src='/javascripts/threshold.js'></script>
+  <script type="text/javascript">
+
+  $(document).ready(function(){
+  
+    var thresholds = new Thresholds('.sensor_thresholds');
+
+  })
+
+  </script>
+
+</head>  
+
+<body> 
+
+<div id='container'>
+
+  <div class='sensor_thresholds'>    
+    <h2>Left Outfield</h2>
+
+    <div class='controller'>
+      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
+      <div class="controller_slider slider"></div>
+    </div>
+
+    <div class='range_key_container' style='display:none'></div>
+
+    
+    <div class='moisture_threshold threshold'>
+      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
+      <div class="moisture_slider slider"></div>
+    </div>
+
+    <div class='temperature_threshold threshold'>
+      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
+      <div class="temperature_slider slider"></div>
+    </div>
+
+    <div class='salinity_threshold threshold'>
+      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
+      <div class="salinity_slider slider"></div>
+    </div>
+
+  </div>
+
+
+
+  <div class='sensor_thresholds'>    
+    <h2>Right Outfield</h2>
+
+    <div class='controller'>
+      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
+      <div class="controller_slider slider"></div>
+    </div>
+
+    <div class='range_key_container' style='display:none'></div>
+
+    
+    <div class='moisture_threshold threshold'>
+      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
+      <div class="moisture_slider slider"></div>
+    </div>
+
+    <div class='temperature_threshold threshold'>
+      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
+      <div class="temperature_slider slider"></div>
+    </div>
+
+    <div class='salinity_threshold threshold'>
+      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
+      <div class="salinity_slider slider"></div>
+    </div>
+
+  </div>
+  
+
+
+  <div class='sensor_thresholds'>      
+    <h2>Center Outfield</h2>
+
+    <div class='controller'>
+      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
+      <div class="controller_slider slider"></div>
+    </div>
+
+    <div class='range_key_container' style='display:none'></div>
+
+    
+    <div class='moisture_threshold threshold'>
+      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
+      <div class="moisture_slider slider"></div>
+    </div>
+
+    <div class='temperature_threshold threshold'>
+      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
+      <div class="temperature_slider slider"></div>
+    </div>
+
+    <div class='salinity_threshold threshold'>
+      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
+      <div class="salinity_slider slider"></div>
+    </div>
+
+  </div>
+
+
+
+  <div class='sensor_thresholds'>    
+    
+    <h2>Infield</h2>
+
+    <div class='controller'>
+      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
+      <div class="controller_slider slider"></div>
+    </div>
+
+    <div class='range_key_container' style='display:none'></div>
+
+    
+    <div class='moisture_threshold threshold'>
+      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
+      <div class="moisture_slider slider"></div>
+    </div>
+
+    <div class='temperature_threshold threshold'>
+      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
+      <div class="temperature_slider slider"></div>
+    </div>
+
+    <div class='salinity_threshold threshold'>
+      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
+      <div class="salinity_slider slider"></div>
+    </div>
+
+    
+  </div>
+
+ 
+
+</div>
+
+</body>
+
+</html>

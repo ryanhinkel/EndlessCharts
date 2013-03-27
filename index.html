@@ -1,0 +1,39 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head>
+  <meta charset='utf-8' /> 
+  <title>charts</title>
+  <style type='text/css'>
+
+    body {font-size: 120%}
+    
+    div#container {height: 300px;background: #eee url('l_dark.png');}
+    div.wall {height: 100px;background: #ddd url('l.png');}
+
+    .section {background-color:#fff;}
+    div.section {height: 50px;}
+
+
+  </style>
+  <script type='text/javascript' src='/javascripts/jquery.js'></script>
+  <script type='text/javascript' src='/javascripts/jquery-ui.js'></script>
+  <script type='text/javascript' src='/javascripts/charts.js'></script>
+  <script type="text/javascript">
+
+  $(document).ready(function(){
+    var chart = new Chart('#container');
+  })
+
+  </script>
+
+</head>  
+
+<body> 
+
+  <div id='container'>
+
+  </div>
+
+</body>
+
+</html>
