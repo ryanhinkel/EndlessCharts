@@ -640,7 +640,7 @@ button.ui-button::-moz-focus-inner {
   height: 12px;
 }
 .ui-slider-horizontal .ui-slider-handle {
-  top: 0;
+  top: 0px;
   margin-left: -20px;
 }
 .ui-slider-horizontal .ui-slider-range {
@@ -785,7 +785,7 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-  font-family: Verdana,Arial,sans-serif;
+  font-family: Helvetica,Arial,sans-serif;
   font-size: 1.1em;
 }
 .ui-widget .ui-widget {
@@ -904,15 +904,15 @@ body .ui-tooltip {
 .ui-priority-secondary,
 .ui-widget-content .ui-priority-secondary,
 .ui-widget-header .ui-priority-secondary {
-  opacity: .7;
-  filter:Alpha(Opacity=70);
+  opacity: .5;
+  filter:Alpha(Opacity=50);
   font-weight: normal;
 }
 .ui-state-disabled,
 .ui-widget-content .ui-state-disabled,
 .ui-widget-header .ui-state-disabled {
-  opacity: .35;
-  filter:Alpha(Opacity=35);
+  opacity: .90;
+  filter:Alpha(Opacity=90);
   background-image: none;
 }
 .ui-state-disabled .ui-icon {

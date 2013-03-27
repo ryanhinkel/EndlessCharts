@@ -1,11 +1,19 @@
 // Dependent on Jquery UI
 
+function inspect(obj){
+  s = '';
+  for(prop in obj){
+    s+=prop+":"+obj[prop]+"\n";
+  }
+  alert(s)
+}
+
 var Thresholds = Class.extend({
 
   init: function(selector){
 
-    this.thresholds = $(selector)
-    //this.id = this.thresholds.id;
+    this.threshold_elements = $(selector)
+    //this.id = this.threshold_elements.id;
     
     this.controller_range_presets = [[7,13],[8.5,15],[10,18],[12.5,21.5],[15, 25],[18.5,29.5],[22,34],[26.5,39.5],[32,46],[38.5,53.5]]
     this.moisture_range = [7,53.5]
@@ -22,15 +30,15 @@ var Thresholds = Class.extend({
     var salinity = this.get_salinity(this.id)
     var t = this;
 
-    this.thresholds.each(function(){
-      var m_t = $(this).find('.moisture_threshold');
-      var t_t = $(this).find('.temperature_threshold');
-      var s_t = $(this).find('.salinity_threshold');
+    this.threshold_elements.each(function(index, element){
+      var m_t = $(element).find('.moisture_threshold');
+      var t_t = $(element).find('.temperature_threshold');
+      var s_t = $(element).find('.salinity_threshold');
       new Threshold(m_t, t.moisture_range, moisture, '%', 1, 21);
       new Threshold(t_t, t.temperature_range, temperature, 'F', 1, 52);
       new Threshold(s_t, t.salinity_range, salinity, '%', .01, 21.35);
 
-      var m_c = $(this).find('.controller')
+      var m_c = $(element).find('.controller')
       if(m_c){
         new Controller(m_c, t.moisture_range, 22, '%', t.controller_range_presets);        
       }
@@ -56,49 +64,58 @@ var Thresholds = Class.extend({
 
 var Threshold = Class.extend({
 
-  init: function(selector, range, values, units, step,value){
-    this.threshold = $(selector)
+  init: function(selector, range, values, units, step, current_value){
+    this.threshold_element = selector;
     this.range = range;
     this.start_values = values;
     this.units = units;
     this.step = step;
 
+
     // dom elements
-    this.sui = this.threshold.find('.slider')
-    this.input_below = this.threshold.find('input.below');
-    this.input_above = this.threshold.find('input.above');
+    this.sui = this.threshold_element.find('.slider')
+    this.input_below = this.threshold_element.find('input.below');
+    this.input_above = this.threshold_element.find('input.above');
     
 
     this.sui_init(range[0], range[1], values, step);
     this.handles = this.class_handles()
     this.handles_init(0);
-    this.set_current_value_marker(value);
+    this.set_current_value_marker(current_value);
 
   },
 
   sui_init: function(min, max, values, step){
-    var threshold = this;
+    var t = this;
     this.sui.slider({
       step: step,
       range: true,
-      animate: "fast",
       min: min,
       max: max,
       values: values,
+      change: function( event, ui ) {
+        // see the people i affect
+      },
       slide: function( event, ui ) {
-        threshold.set_inputs(ui.values)
+        t.set_inputs(ui.values)
+        //inspect(ui)
+      },
+      start: function(event, ui){
+
+
       }
     });
 
-    threshold.set_inputs(this.sui.slider('values'))
+    this.init_inputs(this.sui.slider('values'))
     
 
   },
 
   class_handles: function(){
     var handles = this.sui.find('.ui-slider-handle')
-    below_handle = handles.slice(0,1).addClass('below')
-    above_handle = handles.slice(1,2).addClass('above')
+    var below_handle = handles.slice(0,1).addClass('below')
+    var above_handle = handles.slice(1,2).addClass('above')
+
     return handles;
   },
 
@@ -109,6 +126,7 @@ var Threshold = Class.extend({
       var mousex = e.pageX;
       var mousey = e.pageY;
       $(this).mouseup(function(e){
+        
         var x = e.pageX-mousex;
         var y = e.pageY-mousey;
         //alert(x*x+':'+y*y)
@@ -116,25 +134,59 @@ var Threshold = Class.extend({
           $(this).toggleClass('on')
         }
         $(this).unbind('mouseup');
+        return true;
       })
+      return true;
     })
 
   },
 
+  init_inputs: function(values){
+    var unit = this.units;
+    this.input_below.val(values[0] + unit)
+    this.input_above.val(values[1] + unit)
+
+    /*
+    var l = this.sui.find('.ui-slider-handle.below').css('left');
+    var r = this.sui.find('.ui-slider-handle.above').css('left');
+
+
+    this.input_below.css({
+      'position':'absolute',
+      'top':16+'px',
+      'left':+'px'
+    });
+    this.input_above.css({
+      'position':'absolute',
+      'top':16+'px',
+      'right':0+'px'
+    });
+*/
+
+  },
 
   set_inputs: function(values){
     var unit = this.units;
     this.input_below.val(values[0] + unit)
     this.input_above.val(values[1] + unit)
+
+    /*
+    var l = this.sui.find('.ui-slider-handle.below').css('left');
+    var r = this.sui.find('.ui-slider-handle.above').css('left');
+    
+    this.input_below.css({'left':l+'%'});
+    this.input_above.css({'left':r+'%'});
+  */
+
   },
 
   set_current_value_marker: function(value){
-    var s =this.threshold.find('.slider')
-    var marker = $('<div class="value_marker">'+value+'</div>')
+    var s = this.threshold_element.find('.slider')
+    var marker = $('<div class="value_marker">'+value+this.units+'</div>')
     var left_att = this.get_value_marker_position(value);
     marker.css({
       'position':'absolute',
-      'top':0,
+      'top':-25+'px',
       'left':left_att+'%',
       'z-index': 4
     })
@@ -160,6 +212,7 @@ var Controller = Class.extend({
     this.start_value = value
     this.units = units
     this.range_presets_midpoints = this.find_midpoints(this.range_presets)
+    this.key = 0
 
     // dom elements
     this.sui = this.controller.find('.slider')
@@ -177,8 +230,7 @@ var Controller = Class.extend({
   sui_init: function(min, max, value){
     var controller = this;
     this.sui.slider({
-      step: 0.5,
-      animate: "fast",
+      step: 0.1,
       min: min,
       max: max,
       value: value,
@@ -187,7 +239,7 @@ var Controller = Class.extend({
       }
     });
 
-    controller.set_inputs(this.sui.slider('value'))
+    controller.init_inputs(this.sui.slider('value'))
 
   },
 
@@ -218,11 +270,25 @@ var Controller = Class.extend({
 
   },
 
+  init_inputs: function(target){
+    this.key = this.find_range_preset(target, this.range_presets_midpoints);
+    var range_preset = this.range_presets[this.key];
+    this.controller.find('.range_key').remove();
+    this.build_range_box(range_preset, this.controller.find('.controller_slider'), 0)
+    var unit = this.units;
+    this.input_below.val(range_preset[0] + unit);
+    this.input_above.val(range_preset[1] + unit);
+
+  },
+
   set_inputs: function(target){
     var key = this.find_range_preset(target, this.range_presets_midpoints);
     var range_preset = this.range_presets[key];
-    this.controller.find('.range_key').remove();
-    this.build_range_box(range_preset, this.controller.find('.controller_slider'), 0)
+    if(this.key != key){
+      this.key = key;
+      var box = this.controller.find('.range_key');
+      this.animate_range_box(box, range_preset);
+    }
     var unit = this.units;
     this.input_below.val(range_preset[0] + unit);
     this.input_above.val(range_preset[1] + unit);
@@ -278,10 +344,22 @@ var Controller = Class.extend({
       'left': l+'%',
       'width': (h-l)+'%'
     })
-    box.addClass('range_key')
-    box.appendTo(appendTo)
+    box.addClass('range_key');
+    box.appendTo(appendTo);
 
+  },
+
+  animate_range_box: function(box, range_preset){
+    var ratio = 100/(this.range[1]-this.range[0]);
+    var l = (range_preset[0]-this.range[0])*ratio;
+    var h = (range_preset[1]-this.range[0])*ratio;
+    box.animate({
+      'left': l+'%',
+      'width': (h-l)+'%'
+    }, {'duration':300, 'queue': false})
   }
+
+
 
 
 })

@@ -11,17 +11,17 @@
     
 
 
-    .sensor_thresholds {width: 43.5%;margin: 0 1.5% 1.5% 0; padding: 2.5% 2.5% 10%;background: #eee url('/images/l.png');float:left;}
+    .sensor_thresholds {width: 43.5%;margin: 0 1.5% 1.5% 0; padding: 2.5% 2.5% 6%;background: #eee url('/images/l.png');float:left;}
 
     @media screen and (max-width: 700px) {
-    .sensor_thresholds {width: 95%;margin: 0 0 1.5%; padding: 2.5% 2.5% 10%;float:none;}
+    .sensor_thresholds {width: 95%;margin: 0 0 1.5%; padding: 2.5% 2.5% 5%;float:none;}
     }
 
     .sensor_thresholds h2 {font-size: .8em; margin: 0;}
     .sensor_thresholds .threshold,
-    .sensor_thresholds .controller {margin: 16px 0;}
+    .sensor_thresholds .controller {margin: 40px 0;}
 
-    .sensor_thresholds input {width: 50%; margin:0; padding: 0;display: block; float:left;border: 0; font-weight: bold;background-color:transparent;}
+    .sensor_thresholds input {width: 50%; margin:0; padding: 0;display: block; float:left;border: 0; font-weight: normal;background-color:transparent;}
     .sensor_thresholds .controller_slider input {padding: 0 0 10px;}
     .sensor_thresholds input.below {text-align: left;}
     .sensor_thresholds input.above {text-align: right;}
@@ -30,7 +30,7 @@
 
 
     /* Slider Colors */
-    .sensor_thresholds .moisture_slider .ui-slider-range {background: #05AFF7;}
+    .sensor_thresholds .moisture_slider .ui-slider-range {background: #1b9adc;}
     .sensor_thresholds .temperature_slider .ui-slider-range {
       background: #d8fbff;
       background: -moz-linear-gradient(left, #d8fbff 0%, #2cc5e0 26%, #c1ea59 52%, #f28500 79%, #e85719 99%);
@@ -43,50 +43,59 @@
     }
 
     .sensor_thresholds .temperature_slider .ui-slider-range {
-      background: #108fef;
-background: -moz-linear-gradient(left, #108fef 0%, #5ebde0 35%, #ef6610 70%, #f45b02 76%, #ea3219 100%);
-background: -webkit-gradient(linear, left top, right top, color-stop(0%,#108fef), color-stop(35%,#5ebde0), color-stop(70%,#ef6610), color-stop(76%,#f45b02), color-stop(100%,#ea3219));
-background: -webkit-linear-gradient(left, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
-background: -o-linear-gradient(left, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
-background: -ms-linear-gradient(left, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
-background: linear-gradient(to right, #108fef 0%,#5ebde0 35%,#ef6610 70%,#f45b02 76%,#ea3219 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#108fef', endColorstr='#ea3219',GradientType=1 );
+      background: #1257b7;
+background: -moz-linear-gradient(-45deg,  #1257b7 52%, #c62400 53%);
+background: -webkit-gradient(linear, left top, right bottom, color-stop(52%,#1257b7), color-stop(53%,#c62400));
+background: -webkit-linear-gradient(-45deg,  #1257b7 52%,#c62400 53%);
+background: -o-linear-gradient(-45deg,  #1257b7 52%,#c62400 53%);
+background: -ms-linear-gradient(-45deg,  #1257b7 52%,#c62400 53%);
+background: linear-gradient(135deg,  #1257b7 52%,#c62400 53%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1257b7', endColorstr='#c62400',GradientType=1 );
 
     }
     .sensor_thresholds .temperature_slider {background: rgba(255, 255, 255, 0.95);}
     
 
     .sensor_thresholds .salinity_slider {background: #fff;}
-    .sensor_thresholds .salinity_slider .ui-slider-range {background: #ccc url('/images/salt.png') 0 4px;}
+    .sensor_thresholds .salinity_slider .ui-slider-range {background: #fff url('/images/salt.png') 0 4px;}
 
     /* Handle Icons */
     .sensor_thresholds .ui-slider-handle {cursor: move;}
+    .sensor_thresholds .controller_slider {height: 12px;}
     .sensor_thresholds .controller_slider .ui-slider-handle {
       top: -10px;
       margin-left: -20px;
+      width: 40px;
+      height: 30px;
     }
-    .sensor_thresholds .controller_slider .ui-slider-handle {background: transparent url('/images/controller_drop.png') no-repeat;}
-    .sensor_thresholds .controller_slider .ui-slider-handle.locked {background: transparent url('/images/controller_drop.png') no-repeat;}
-    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below {background: transparent url('/images/flag_l.png') no-repeat;}
-    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above {background: transparent url('/images/flag_r.png') no-repeat;}
-    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below.on {background: transparent url('/images/flag_l_o.png') no-repeat;}
-    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above.on {background: transparent url('/images/flag_r_o.png') no-repeat;}
+
+    .ui-slider-handle {outline-style: none;}
+
+    .sensor_thresholds .controller_slider .ui-slider-handle {background: transparent url('/images/controller3.png') no-repeat;}
+    .sensor_thresholds .controller_slider .ui-slider-handle.locked {background: transparent url('/images/locked.png') no-repeat;}
+    
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below {background: transparent url('/images/flag_l_s.png');}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above {background: transparent url('/images/flag_r_s.png');}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below.on {background: transparent url('/images/flag_l_s_o.png');}
+    .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above.on {background: transparent url('/images/flag_r_s_o.png');}
 
     .sensor_thresholds .controller_slider .range_key {background: #1CC950;height: 12px;text-indent: -9999px; overflow: hidden;}
-
+    .sensor_thresholds .ui-state-disabled .range_key {background: #ddd;}
     /* Range Key */
     .range_key_container {position:relative;border:1px solid #ccc;height: 100px;}
-    .range_key {background: #05AFF7;height: 10px;font-size: 8px;color: #fff;text-align:center;}
+    .range_key {background: #05AFF7;height: 20px;font-size: 8px;color: #fff;text-align:center;}
 
     /* Value Marker */
-    .value_marker {width:40px;height:20px;padding:10px 0 0; font-size: 16px;text-align:center;font-weight: bold;background: url('/images/pinpoint3.png');}
+    .value_marker {background: url('/images/carrot2.png') no-repeat bottom center;width:40px;height:25px;padding:0px 0 0; font-size: 12px;text-align:center;font-weight: bold;}
+
+    .threshold {position:relative;}
 
   </style>
 
   <link rel="stylesheet" href="css/jqueryui.css" />
   <script type='text/javascript' src='/javascripts/inheritence.js'></script>
-  <script type='text/javascript' src='/javascripts/jquery.js'></script>
-  <script type='text/javascript' src='/javascripts/jquery-ui.js'></script>
+  <script type='text/javascript' src='/javascripts/jquery-1.3.2.js'></script>
+  <script type='text/javascript' src='/javascripts/jquery-ui.min.js'></script>
   <script type='text/javascript' src='/javascripts/threshold.js'></script>
   <script type="text/javascript">
 
@@ -94,6 +103,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#108fef', end
   
     var thresholds = new Thresholds('.sensor_thresholds');
 
+    function tester(){
+      var ar = $('.tester .slider').slider('values')
+      //alert(ar[0]+'_'+ar[1])
+    }
+    // var intervalID = setInterval(tester, 5000)
   })
 
   </script>
