@@ -133,7 +133,7 @@ var ChartSection = Class.extend({
     this.section_width = section_width;
 
     this.wall = wall;
-    this.section = $("<div class='section'><img src='test.png' /></div>")
+    this.section = $("<div class='section'><img src='/images/test.png' /></div>")
     this.section.appendTo(this.wall);
     this.section.width(this.section_width);
   },
