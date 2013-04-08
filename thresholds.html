@@ -7,19 +7,45 @@
 
     body {margin:0; padding: 0;font-size: 100%; font-family: Helvetica, Arial, 'san-serif';}
         
-    #container {width: 95%;padding: 2.5% ;background: #ccc url('/images/l_dark.png'); overflow: auto;}
+    #bar {width: 97%;padding: 1.5%;overflow: auto;}
+    #bar a {width: 40px; height: 40px;margin: 0 5px 0 0;float:left;text-indent: -9999px;}
+    
+    #bar #moisture_button {background: #1b9adc url('/images/moisture_button.png');}
+    #bar #temp_button {
+      background: #1257b7;
+      background: -moz-linear-gradient(-45deg,  #1257b7 52%, #c62400 53%);
+      background: -webkit-gradient(linear, left top, right bottom, color-stop(52%,#1257b7), color-stop(53%,#c62400));
+      background: -webkit-linear-gradient(-45deg,  #1257b7 52%,#c62400 53%);
+      background: -o-linear-gradient(-45deg,  #1257b7 52%,#c62400 53%);
+      background: -ms-linear-gradient(-45deg,  #1257b7 52%,#c62400 53%);
+      background: linear-gradient(135deg,  #1257b7 52%,#c62400 53%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1257b7', endColorstr='#c62400',GradientType=1 );
+
+    }
+    #bar #salt_button {background: #fff url('/images/salt.png') 0 4px;}
+    #bar #controller_button {background: transparent url('/images/controller3.png') 3px 3px no-repeat;}
+
+    #container {width: 97%;padding: 1.5%;background: #ccc url('/images/l_dark.png'); overflow: auto;}
     
 
 
-    .sensor_thresholds {width: 43.5%;margin: 0 1.5% 1.5% 0; padding: 2.5% 2.5% 6%;background: #eee url('/images/l.png');float:left;}
+    .sensor_thresholds {width: 20%;margin: 0 1% 1% 0; padding: 1% 2% 1%;background: #eee url('/images/l.png');float:left;}
 
-    @media screen and (max-width: 700px) {
-    .sensor_thresholds {width: 95%;margin: 0 0 1.5%; padding: 2.5% 2.5% 5%;float:none;}
+    @media screen and (max-width: 900px) {
+    #bar {width: 95%;padding: 2.5%;}
+
+    #container {width: 95%;padding: 2.5%;background: #ccc url('/images/l_dark.png'); overflow: auto;}
+
+    .sensor_thresholds {width: 44%;margin: 0 1% 1% 0; padding: 1% 2% 1%;background: #eee url('/images/l.png');float:left;}
+    }
+
+    @media screen and (max-width: 500px) {
+    .sensor_thresholds {width: 95%;margin: 0 0 1.5%; padding: 1% 2.5% 1%;float:none;}
     }
 
     .sensor_thresholds h2 {font-size: .8em; margin: 0;}
     .sensor_thresholds .threshold,
-    .sensor_thresholds .controller {margin: 40px 0;}
+    .sensor_thresholds .controller {margin: 15px 0 30px;}
 
     .sensor_thresholds input {width: 50%; margin:0; padding: 0;display: block; float:left;border: 0; font-weight: normal;background-color:transparent;}
     .sensor_thresholds .controller_slider input {padding: 0 0 10px;}
@@ -74,6 +100,11 @@
     .sensor_thresholds .controller_slider .ui-slider-handle {background: transparent url('/images/controller3.png') no-repeat;}
     .sensor_thresholds .controller_slider .ui-slider-handle.locked {background: transparent url('/images/locked.png') no-repeat;}
     
+    .sensor_thresholds .monitoring .controller_slider .ui-slider-handle {display:none;}
+    .sensor_thresholds .monitoring .controller_slider .range_key {display:none;}
+    .sensor_thresholds .monitoring .controller_slider input {visibility: hidden;}
+
+
     .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below {background: transparent url('/images/flag_l_s.png');}
     .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.above {background: transparent url('/images/flag_r_s.png');}
     .sensor_thresholds .ui-slider-horizontal .ui-slider-handle.below.on {background: transparent url('/images/flag_l_s_o.png');}
@@ -115,6 +146,13 @@
 </head>  
 
 <body> 
+
+<div id='bar'>
+<a id='moisture_button'>Moisture</a>
+<a id='temp_button'>Temperature</a>
+<a id='salt_button'>Salinity</a>
+<a id='controller_button'>Control</a>
+</div>
 
 <div id='container'>
 
@@ -179,7 +217,7 @@
 
 
   <div class='sensor_thresholds'>      
-    <h2>Center Outfield</h2>
+    <h2>Infield</h2>
 
     <div class='controller'>
       <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
@@ -210,9 +248,9 @@
 
   <div class='sensor_thresholds'>    
     
-    <h2>Infield</h2>
+    <h2>Infield Monitoring</h2>
 
-    <div class='controller'>
+    <div class='controller monitoring'>
       <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
       <div class="controller_slider slider"></div>
     </div>
@@ -241,6 +279,33 @@
  
 
 </div>
+
+
+<script type='text/javascript'>
+
+$(document).ready(function(){
+
+$('.controller').hide();
+$('.salinity_threshold').hide();  
+
+$('#moisture_button').click(function(){
+  $('.moisture_threshold').slideToggle();    
+})
+
+$('#temp_button').click(function(){
+  $('.temperature_threshold').slideToggle();    
+})
+$('#salt_button').click(function(){
+  $('.salinity_threshold').slideToggle();    
+})
+$('#controller_button').click(function(){
+  $('.controller').slideToggle();    
+})
+
+
+})
+
+</script>
 
 </body>
 

@@ -8,10 +8,10 @@
     body {font-size: 120%}
     
     div#container {height: 300px;background: #eee url('/images/l_dark.png');}
-    div.wall {height: 100px;background: #ddd url('/images/l.png');}
+    div.wall {height: 200px;background: #ddd url('/images/l.png') repeat;}
 
     .section {background-color:#fff;}
-    div.section {height: 50px;}
+    div.section {height: 50px;outline-style: solid;outline-width: 1px;}
 
 
   </style>
@@ -19,11 +19,25 @@
   <script type='text/javascript' src='/javascripts/jquery-ui.min.js'></script>
   <script type='text/javascript' src='/javascripts/inheritence.js'></script>
   <script type='text/javascript' src='/javascripts/charts.js'></script>
-  <script type='text/javascript' src='/javascripts/dataLibrary.js'></script>
+  <script type='text/javascript' src='/javascripts/TimeData.js'></script>
   <script type="text/javascript">
 
   $(document).ready(function(){
     var chart = new Chart('#container');
+    $('#zoom0').click(function(){
+      chart.zoom_to(0);
+    })
+    $('#zoom1').click(function(){
+      chart.zoom_to(1);
+    })
+    $('#zoom2').click(function(){
+      chart.zoom_to(2);
+    })
+    $('#zoom3').click(function(){
+      chart.zoom_to(3);
+    })
+
+
   })
 
   </script>
@@ -35,6 +49,11 @@
   <div id='container'>
 
   </div>
+
+  <a id='zoom0'>Z0</a>
+  <a id='zoom1'>Z1</a>
+  <a id='zoom2'>Z2</a>
+  <a id='zoom3'>Z3</a>
 
 </body>
 

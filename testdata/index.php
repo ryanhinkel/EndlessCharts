@@ -68,7 +68,7 @@ function m(&$moisture, $start_moisture, &$trend){
 }
 
 // Generate data
-
+if(!isset($_GET['sensors'])){$_GET['sensors'] = '1,2,3,4,5,6,7,8,9,10';}
 $sensors = @explode(',', $_GET['sensors']);
 $start = $_GET['start'];
 $end = $_GET['end'];

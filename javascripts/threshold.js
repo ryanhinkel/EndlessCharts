@@ -1,5 +1,7 @@
 // Dependent on Jquery UI
 
+// Recommended Moisture Levels
+
 function inspect(obj){
   s = '';
   for(prop in obj){
