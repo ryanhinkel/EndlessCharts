@@ -12,10 +12,11 @@ var ChartLoader = Class.extend({
 
   init: function(container){
 
+
     // constants
     this.BUFFER_SIZE = 1000;
     this.ZOOM_FACTOR = 3;
-    this.ZOOM_BASE_RANGE = 1000;
+    this.ZOOM_BASE_RANGE = 1440;
     this.SECTION_SIZE = 1000;
     this.ORIGIN = 21039840;
     if(this.ORIGIN%1440!=0){alert("origin does not fall on an even interval");}
@@ -23,6 +24,9 @@ var ChartLoader = Class.extend({
     // variables
     this.zoom = 0;
     this.now_padding = 0;
+
+    // The Data
+    this.data_machine = new TimeData(this.ZOOM_BASE_RANGE, this.ZOOM_FACTOR);
 
     // The Container
     this.container = $(container);
@@ -187,12 +191,12 @@ var ChartLoader = Class.extend({
 
   add_section: function(section_index){
     var range = this.section_range(section_index);
-    var section = new ChartSection(this.wall, this.SECTION_SIZE, section_index, range, this.zoom)
+    var section = new ChartSection(this.wall, this.data_machine, this.SECTION_SIZE, section_index, range, this.zoom)
     if(this.sections[section_index]){
       this.remove_section(section_index);
     }
     section.tile();
-    section.flash();
+    section.draw();
     this.sections[section_index] = section;
 
   },

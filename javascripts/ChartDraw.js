@@ -169,7 +169,6 @@ var CCAL = Class.extend({
 var Axis = CCAL.extend({
   init: function(canvas){
     this._super(canvas);
-    var timezone;
     this.timezone = -300;
   },
 
@@ -341,16 +340,16 @@ var Plotter = CCAL.extend({
     this.render()
   },
 
-  //{'label':[[20,30],[40,65]]}
   render : function(){
       var chart = this;
       var colors_wide = ['#f60b00','#f61f00','#f6320b','#f74301','#f85600','#f86900','#fa7b00','#fc8c00','#fca100','#fcb500','#fcc600','#fcda00','#fdec00','#feff01','#e2ff1b','#c2fd3f','#a2fe5f','#82fd81','#62faa4','#41fac3','#21fae6','#0af0ff','#08cdff','#07abff','#007fff','#3333ff','#0000ff','#111190','#660099']
       var colors = ['#f60b00','#f74301','#fa7b00','#fcb500','#fdec00','#c2fd3f','#62faa4','#0af0ff','#007fff','#111190','#660099']
       var label_spot = 1;
       var color_choice = 0;
-
+      
       this.grid([false, false])
 
+      if(!chart.data){return false;}
       $.each(chart.data, function(label,dataset){
         if(color_choice+1 < colors.length)
           color_choice++
@@ -363,7 +362,6 @@ var Plotter = CCAL.extend({
       })
   },
 
-  // [[20,30],[40,65],[45,65]]
   plot: function(dataset,color){
     var chart = this;
     lineRes = dataset //this.downsample(dataset, 0)
