@@ -318,22 +318,6 @@ var Plotter = CCAL.extend({
     this.data=d;
   },
 
-  loadData: function(url){  // Must already be in correct format.
-  var chart = this;
-  $.ajax(
-      {
-        url: url,
-        type: "get",
-        dataType: "json",
-        error: function(){alert("Error loading data")},
-        success: function(data){
-          chart.setData(data)
-          chart.draw()
-        }
-      }             
-    );
-  },
-
 
   draw: function(){
     this.clear();
@@ -372,7 +356,7 @@ var Plotter = CCAL.extend({
 
     $.each(pointRes, function(i,gc){
       //chart.tick(gc, 5, 1, color)
-      chart.point(gc, .5, '#000000')
+      //chart.point(gc, .5, '#000000')
     })
 
     $.each(labelRes, function(i,gc){

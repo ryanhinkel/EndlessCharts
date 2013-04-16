@@ -26,52 +26,34 @@ function f($x, $base, $flux){
 
 // Function for generating moisture
 
-function m(&$moisture, $start_moisture, &$trend){
+function m($x, $base, $flux){
   
-  if(mt_rand(0,10)<2){
-    //$moisture += mt_rand(-1, 1);
-  }
-
-  if(mt_rand(0,100)<2){
-    //$trend * 2;
-  }
-
-  $span = 0.01;
-  $tolerance = 10;
-
-  $dif = $start_moisture-$moisture;
-  $bend = $span*$dif/$tolerance;
-  /*
-  if(abs($dif/$tolerance)>1){
-    $trend / $bend;
-  }
-  */
-   
-  if(abs($trend) > .02){
-    $trend * .1;
-  }
-
-  $trend += ((rand()/getrandmax()-.5) * $span)+$bend;
+  $daylight = 60;
+  $timezone = -300;
+  $shift_to_temp = 720; // minutes to shift sin wave to get reasonable day/night temps
+  $x += ($daylight + $timezone + $shift_to_temp);
   
-  $moisture += $trend;
-  
-  /*
-  if($trend >= 0)
-    print ' ';
-  print number_format($trend, 4, '.','') . ' ' . $start_moisture.':'. number_format($moisture, 4, '.','') .  ' ';
-  if($bend >= 0)
-    print ' ';
-  print round($bend,5)."\n";
-  */
+  $x = ($x/4); // minutes to degrees (1440 -> 360)
 
-  return round($moisture,3);
+  $radians = $x*pi()/180; // degrees to radians
+  $y = sin($radians); // time to value
+  $y_scaler = round(($y+1)/2, 3); // value to scaler
+
+  $y = floor(($y_scaler*$flux)+ $base);
+
+  return $y;
 }
 
 // Generate data
-if(!isset($_GET['sensors'])){$_GET['sensors'] = '1,2,3,4,5,6,7,8,9,10';}
+if(!isset($_GET['sensors'])){$_GET['sensors'] = '1';}
 $sensors = @explode(',', $_GET['sensors']);
 $start = $_GET['start'];
 $end = $_GET['end'];
+$zoom = $_GET['size'];
+if(!$zoom){
+  $zoom = '10';
+}
+
 
 $output = "";
 $output .= "{";
@@ -81,19 +63,12 @@ if(is_array($sensors)){
     $output .= "\"start\":".$start.",";
     $output .= "\"data\":[";
 
-    $base = mt_rand(40, 50);
-    $flux = mt_rand(20, 30);
-    $start_moisture = mt_rand(25, 60);
-    $moisture = $start_moisture;
-    $trend = 0;
-
-
-    for($i=$start; $i<=$end; $i+=10){
-
-
-
-      $output .= "[".$i . ",\"" .m($moisture, $start_moisture, $trend) . "\",\"" . f($i, $base, $flux) . "\",null]";
-      if($i + 10 <= $end){
+    $base = 20 + ($value*2);
+    $flux = 40;
+    
+    for($i=$start; $i<=$end; $i+=$zoom){
+      $output .= "[".($i+5) . ",\"" .m($i, $base, $flux) . "\",\"" . f($i, $base, $flux) . "\",null]";
+      if($i + $zoom <= $end){
         $output .= ",";
       }
     }

@@ -2,7 +2,8 @@
 
 // Assumptions
 // Ratio 
-// 
+// Must Drop Chart_Sections after a point
+// Must gather fringe datapoints to chart effectively
 
 /* ------------------------------------------------------------------ */
 // Chart System
@@ -14,19 +15,23 @@ var ChartLoader = Class.extend({
 
 
     // constants
-    this.BUFFER_SIZE = 1000;
+    this.BUFFER_SIZE = -100;
     this.ZOOM_FACTOR = 3;
     this.ZOOM_BASE_RANGE = 1440;
+    this.BASE_RES = 2;
     this.SECTION_SIZE = 1000;
-    this.ORIGIN = 21039840;
-    if(this.ORIGIN%1440!=0){alert("origin does not fall on an even interval");}
+    // 20995200 Jan 1 2009
+    // 20995200
+    this.ORIGIN = 18895680;
+    if(this.ORIGIN%(1440*6561)!=0){alert("origin does not fall on an even interval");}
     
     // variables
     this.zoom = 0;
     this.now_padding = 0;
+    this.sen
 
     // The Data
-    this.data_machine = new TimeData(this.ZOOM_BASE_RANGE, this.ZOOM_FACTOR);
+    this.data_store = new TimeData(this, '/testdata/');
 
     // The Container
     this.container = $(container);
@@ -50,10 +55,7 @@ var ChartLoader = Class.extend({
     this.init_chart_filling();
 
     // this.draw();
-    var data = new TimeData(720, '/testdata/');
-    var range = (data.timecode(data.tile_now()));
-    data.request(range[0], range[1], 1)
-
+    
   },
 
   zoom_to: function(z){
@@ -180,10 +182,11 @@ var ChartLoader = Class.extend({
   },
 
   section_range: function(index){
-    var s = (index*this.SECTION_SIZE)/this.minutes_to_pixels_ratio()+this.ORIGIN;
-    var e = (index+1)*this.SECTION_SIZE/this.minutes_to_pixels_ratio()+this.ORIGIN;
+    var s = index*this.zoom_range()+this.ORIGIN;
+    var e = (index+1)*this.zoom_range()+this.ORIGIN;
     return [s,e];
   }, 
+
 
   /* ------------------------------------------------------------------ */
   // Section Management
@@ -191,14 +194,10 @@ var ChartLoader = Class.extend({
 
   add_section: function(section_index){
     var range = this.section_range(section_index);
-    var section = new ChartSection(this.wall, this.data_machine, this.SECTION_SIZE, section_index, range, this.zoom)
-    if(this.sections[section_index]){
-      this.remove_section(section_index);
-    }
-    section.tile();
-    section.draw();
+    var section = new ChartSection(this, section_index, range)
+    if(this.sections[section_index]){this.remove_section(section_index);}
     this.sections[section_index] = section;
-
+    section.draw();
   },
   
   remove_section: function(section_index){
@@ -239,7 +238,12 @@ var ChartLoader = Class.extend({
   /* ------------------------------------------------------------------ */
 
   minutes_to_pixels_ratio: function(){
-    return this.SECTION_SIZE/(this.ZOOM_BASE_RANGE*Math.pow(this.ZOOM_FACTOR, this.zoom));
+    return this.SECTION_SIZE/this.zoom_range();
+  },
+
+  zoom_range: function(){
+    return this.ZOOM_BASE_RANGE*Math.pow(this.ZOOM_FACTOR, this.zoom);
   }
+
 
 })

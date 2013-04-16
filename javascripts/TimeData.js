@@ -11,57 +11,52 @@
 
 var TimeData = Class.extend({
 
-  init: function(block_size, data_url){
-    this.cachetiles = [];
-    this.cacheres = [];
-    this.data_url = data_url;
-    this.block_size = block_size;
-    //this.tile_request(this.now_tile())
+  init: function(loader, datatiles){
+    this.cache = [];
+    this.cachezoom = [];
+    this.loader = loader;
+    this.datatiles = datatiles;
+    // [t1,t2,t3]
+    // t = [c1,c2,c3]
+    // c = [{s1:[dp1, dp2, dp3]},{s2:[dp1, dp2, dp3]}]
   },
 
   // ----------------------------------------------------
   // Public - Request
   // ----------------------------------------------------
 
-  request: function(s, e, r){
-    var tile = this.tile_strict(s,e);
-    if(!tile){
-      return false;
-    }
-    if(this.cached(tile, r)){
-      alert ('cached');
-      // this.digup(tile,r)
+  request: function(chart_section, location){
+    var range = chart_section.range;
+    var zoom = this.loader.zoom;
+
+    coordinate = 1;
+
+    var tile = this.tile_strict(range[0],range[1], zoom);
+    if(!tile){return false;}
+
+    
+    $('#message').append("<br />"+zoom+" : "+tile+" : "+location+" : "+coordinate);
+
+    if(this.cached(zoom, tile, location)){
+      $('#message').append(" : Cached");
+      this.dig_up(zoom, tile, location, chart_section);
     } else {
-      this.tile_request(tile, r); 
+      return this.server_request(zoom, tile, location, chart_section); 
     }
   },
 
   // ----------------------------------------------------
-  // Public - Utility Functions Tile Ranges - might have to be moved to another class
+  // Private - Tiling
   // ----------------------------------------------------
-
-  tile_now: function(){
-    var d = new Date();
-    return this.tile(Math.floor(d.valueOf()/60000));
-  },
 
   tile_strict: function(start,end){
     return this.valid_tile(start, end);
   },
 
-  tiles: function(start, end){
-    var s_tile = Math.floor(start/this.block_size);
-    var e_tile = Math.floor(end/this.block_size);
-    return [s_tile, e_tile];
-  },
-
-  tile: function(timecode){
-    return Math.floor(timecode/this.block_size);
-  },
-
   timecode: function(tile){
-    var s = tile*this.block_size;
-    var e = s+this.block_size;
+    var block_size = this.loader.zoom_range();
+    var s = tile*block_size;
+    var e = s+block_size;
     return [s,e];
   },
 
@@ -69,65 +64,144 @@ var TimeData = Class.extend({
   // Private - Request
   // ----------------------------------------------------
 
-  tile_request: function(tile, res){
-    var r = this.timecode(tile);
-    this.timecode_request(r[0], r[1], res);
+  server_request: function(zoom, tile, location, chart_section){
+    var range = this.timecode(tile);
+    new TimeDataRequest(zoom, tile, location, chart_section, this);
   },
 
-  timecode_request: function(start, end, res){
-    var td = this;
-    if(!this.valid_tile(start, end)){return false;}
-    var options = {
-      url: td.server_url(start, end, res),
-      type: "get",
-      dataType: "json",
-      error: td.error,
-      success: td.store
-    }
-    $.ajax(options);
-    return true;
-  },
 
   valid_tile: function(start, end){
-    if(start%this.block_size == 0 && end-start == this.block_size){
-      return start/this.block_size;
+    var block_size = this.loader.zoom_range();
+    if(start%block_size == 0 && end-start == block_size){
+      return start/block_size; // index
     } else {
       alert('false tile');
       return false;
     }
   },
 
-  server_url: function(start, end, res){
-    return this.data_url + '?start=' + start + '&end=' + end + '&res=' + res;
-  },
-
-  error: function(){
-    alert("Error loading data");
+  server_url: function(location, range, zoom){
+    return this.datatiles + '?sensors='+location+'&start=' + range[0] + '&end=' + range[1] + '&size=' + zoom;
   },
 
   // ----------------------------------------------------
-  // Parsing
+  // Storage and Parsing
   // ----------------------------------------------------
 
-  store: function(data){
-    //alert('store function');
+  parse_and_store: function(zoom, tile, data){
+
+    var moisture = [];
+    var temperature = [];
+    var salinity = [];
+
+    var tiles = this.ready(this.cache, zoom);
+    var locations = this.ready(tiles, tile);
+
+    // {134:[x, y1, y2, y3]} -> [x, y1], [x, y2], [x, y3]
+    $.each(data, function(location, properties){
+
+      // should only be executed once
+      // one location per request
+
+      var data = properties['data'];
+
+      $.each(data, function(key, c){
+        
+        var time_value = c[0];
+        var m_value = c[1];
+        var t_value = c[2];
+        var s_value = c[3];
+
+        var moisture_coor = [time_value, m_value];
+        var temp_coor = [time_value, t_value];
+        var salinity_coor = [time_value, s_value];
+
+        moisture.push(moisture_coor)
+        temperature.push(temp_coor)
+        salinity.push(salinity_coor)
+
+      })
+      // don't use 1,2,3 - use moisture, temp, salinity
+      locations[location]={};
+      locations[location]['moisture'] = {};
+      locations[location]['moisture'][location] = moisture;
+      locations[location]['temperature'] = {};
+      locations[location]['temperature'][location] = temperature;
+      locations[location]['salinity'] = {};
+      locations[location]['salinity'][location] = salinity;
+
+    })
+
   },
 
-  parse: function(sensor_data, val_index){
-    return [sensor_data[0], sensor_data[val_index]];
+  dig_up: function(zoom, tile, location, chart_section){
+    
+    var data = this.cache[zoom][tile][location];
+    chart_section.update_location_data(location, data);
   },
 
   // ----------------------------------------------------
   // Caching 
   // ----------------------------------------------------
 
-  cached: function(tile, res){
-    // Implement res check here
-    //alert this.cacheres[tile];
+  cached: function(zoom, tile, location){
 
-    return(this.cachetiles[tile]!==undefined);
+    if(this.cache[zoom]!==undefined){ 
+      if(this.cache[zoom][tile]!==undefined){
+        if(this.cache[zoom][tile][location]!==undefined){
+          return true;
+        }
+      }
+    }
+    return false;
+  },
 
-  }
+  ready: function(arr, index){
+    if(!arr[index]){
+      arr[index] = [];
+    }
+    return arr[index];
+  },
   
+
+})
+
+var TimeDataRequest = Class.extend({
+
+  init: function(zoom, tile, location, chart_section, data_store){
+    var request = this;
+    this.chart_section = chart_section;
+    this.zoom = zoom;
+    this.tile = tile;
+    this.location = location;
+
+
+    var range = chart_section.range;
+    var zoom = data_store.loader.zoom;
+    var factor = data_store.loader.ZOOM_FACTOR;
+    var baseres = data_store.loader.BASE_RES
+    var simpleres = baseres*Math.pow(factor,zoom);
+
+    var url = data_store.server_url(location, range, simpleres);
+    var options = {
+      url: url,
+      type: "get",
+      dataType: "json",
+      error: request.error,
+      success: function(data){
+        data_store.parse_and_store(request.zoom, request.tile, data);
+        data_store.dig_up(request.zoom, request.tile, request.location, request.chart_section);
+      }
+    }
+    $('#message').append(" : Request made to "+url);
+    $.ajax(options);
+    return true;
+  },
+
+  error: function(){
+    alert('ErroRoooooo!');
+  }
+
+
 
 })
