@@ -59,15 +59,18 @@ $output = "";
 $output .= "{";
 if(is_array($sensors)){
   foreach ($sensors as $key => $value) {
+
     $output .= $value.":{";
     $output .= "\"start\":".$start.",";
     $output .= "\"data\":[";
 
-    $base = 20 + ($value*2);
-    $flux = 40;
-    
+    $offset_x = 144;
+    $offset_y = 0;
+    $base = 20+($offset_y*$value);
+    $flux = 60;
+
     for($i=$start; $i<=$end; $i+=$zoom){
-      $output .= "[".($i+5) . ",\"" .m($i, $base, $flux) . "\",\"" . f($i, $base, $flux) . "\",null]";
+      $output .= "[".$i . ",\"" .m(($i-($value*$offset_x)), $base, $flux) . "\",\"" . f(($i-($value*$offset_x)), $base, $flux) . "\",null]";
       if($i + $zoom <= $end){
         $output .= ",";
       }

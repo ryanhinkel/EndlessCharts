@@ -45,6 +45,7 @@ var ChartLoader = Class.extend({
 
     // Sections
     this.sections = {};
+    this.locations = [];
 
     // Questionable!
     //this.zoom_res_map = {"1":1, "3":2, "9":6, "27":18, "81":54, "c":162}
@@ -197,6 +198,7 @@ var ChartLoader = Class.extend({
     var section = new ChartSection(this, section_index, range)
     if(this.sections[section_index]){this.remove_section(section_index);}
     this.sections[section_index] = section;
+    section.set_locations(this.locations);
     section.draw();
   },
   
@@ -216,21 +218,19 @@ var ChartLoader = Class.extend({
     return (this.sections[section_index]!==undefined);
   },
 
+  set_locations: function(locations){
+    this.locations = locations;
+    $.each(this.sections, function(key, val){
+      this.set_locations(locations);
+    })
+  },
+
   /* ------------------------------------------------------------------ */
 
   draw: function(){
     $.each(this.sections, function(position, section){
       section.draw();
     })
-  },
-
-  put_line: function(t){
-    var line = $('<div class="put_line" style="width:1px;padding-top:200px;height:100px;background-color:#ccc;position:absolute;">'+
-      t+'</div>');
-    line.appendTo(this.wall);
-
-    var posx = (t-this.ORIGIN)*this.minutes_to_pixels_ratio();
-    line.css({'left':posx+'px'})
   },
 
   /* ------------------------------------------------------------------ */

@@ -9,7 +9,7 @@ var ChartSection = Class.extend({
 
     // The Section
     this.range = range;
-    this.y_axis = [0,100];
+    this.y_axis = [0,101];
     
     // The Element
     //this.element = this.init_test_image();
@@ -28,7 +28,7 @@ var ChartSection = Class.extend({
     this.plotter.setDimensions([this.element_width,this.element_height])
 
     // The Data
-    this.active_locations = [1,2,3,4,5,6,7,8,9,10];
+    this.active_locations = [];
     this.section_data = {};
 
   },
@@ -121,6 +121,7 @@ var ChartSection = Class.extend({
   draw: function(){
     section = this;
     this.plotter.draw();
+    this.section_data = {};
     // must load multiple locations, all refreshing the section when they load.
     // must provide mechanism for not showing chart data if its no longer vis 
     $.each(this.active_locations, function(key, location){
