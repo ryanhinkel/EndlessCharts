@@ -12,12 +12,14 @@ function inspect(obj){
 
 var Thresholds = Class.extend({
 
-  init: function(selector){
+  init: function(container){
 
-    this.threshold_elements = $(selector)
-    //this.id = this.threshold_elements.id;
-    
-    this.controller_range_presets = [[7,13],[8.5,15],[10,18],[12.5,21.5],[15, 25],[18.5,29.5],[22,34],[26.5,39.5],[32,46],[38.5,53.5]]
+    this.container = $(container);
+
+
+    this.locations = [83, 84];
+    this.sensor_groups = {}
+    this.controller_range_presets = [[4,8],[5.5,10.5],[7,13],[8.5,15.5],[11, 19],[13.5,22.5],[17,27],[21.5,32.5],[27,39],[33.5,46.5]]
     this.moisture_range = [7,53.5]
     this.temperature_range = [-10,110]
     this.salinity_range = [19,24]
@@ -26,53 +28,77 @@ var Thresholds = Class.extend({
     //alert(this.id)
   },
 
+
+
   sensors_init: function(){
-    var moisture = this.get_moisture(this.id)
-    var temperature = this.get_temperature(this.id)
-    var salinity = this.get_salinity(this.id)
+    
     var t = this;
 
-    this.threshold_elements.each(function(index, element){
-      var m_t = $(element).find('.moisture_threshold');
-      var t_t = $(element).find('.temperature_threshold');
-      var s_t = $(element).find('.salinity_threshold');
-      new Threshold(m_t, t.moisture_range, moisture, '%', 1, 21);
-      new Threshold(t_t, t.temperature_range, temperature, 'F', 1, 52);
-      new Threshold(s_t, t.salinity_range, salinity, '%', .01, 21.35);
-
-      var m_c = $(element).find('.controller')
-      if(m_c){
-        new Controller(m_c, t.moisture_range, 22, '%', t.controller_range_presets);        
-      }
-
+    $.each(this.locations, function(index, id){
+      new ThresholdGrouping(id, t);
+      
     })
-  },
-
-  get_moisture: function(id){
-    return [10,30];
-  },
-
-  get_temperature: function(id){
-    return [32,70];
-  },
-
-  get_salinity: function(id){
-    return [20.31,20.37];
   }
 
 })
 
 /* ------------------------------------------------------ */
 
+var ThresholdGrouping = Class.extend({
+  init: function(id, thresholds){
+    this.thresholds = thresholds;
+    this.dom_init(thresholds.container, id, false);
+    this.slider_init()
+  },
+
+  /* ------------------------------------------------------ */
+
+  dom_init: function(container, location_name, controlling){
+    var group_element = $("<div class='sensor_thresholds'>").appendTo(container);
+    group_element.append("<h2>"+location_name+"</h2>");
+    this.moisture = this.dom_slider('moisture').appendTo(group_element);
+    this.temperature = this.dom_slider('temperature').appendTo(group_element);
+
+  },
+
+  dom_slider: function(variable){
+    var element = $('<div class="'+variable+'_threshold threshold"></div>');
+    this.dom_input(variable, 'below').appendTo(element);
+    this.dom_input(variable, 'above').appendTo(element);
+    $('<div class="'+variable+'_slider slider"></div>').appendTo(element);
+    return element;
+  },
+
+  dom_input: function(variable, which_end){
+    return $('<input type="text" class="'+variable+'_'+which_end+' '+which_end+'" />');
+  },
+
+  /* ------------------------------------------------------ */
+
+  slider_init: function(){
+    new Threshold(this.moisture, this.thresholds.moisture_range, [30,40], '%', 1, 30);
+    new Threshold(this.temperature, this.thresholds.temperature_range, [30,60], 'F', 1, 52);
+    //new Threshold(t_t, t.temperature_range, temperature, 'F', 1, 52);
+    //new Threshold(s_t, t.salinity_range, salinity, '%', .01, 21.35);
+    // new Controller(m_c, t.moisture_range, 22, '%', t.controller_range_presets);        
+  }
+
+
+
+
+  
+});
+
+/* ------------------------------------------------------ */
+
 var Threshold = Class.extend({
 
-  init: function(selector, range, values, units, step, current_value){
-    this.threshold_element = selector;
+  init: function(element, range, values, units, step, current_value){
+    this.threshold_element = element;
     this.range = range;
     this.start_values = values;
     this.units = units;
     this.step = step;
-
 
     // dom elements
     this.sui = this.threshold_element.find('.slider')
@@ -207,8 +233,8 @@ var Threshold = Class.extend({
 
 var Controller = Class.extend({
 
-  init: function(selector, range, value, units, range_presets){
-    this.controller = $(selector)
+  init: function(element, range, value, units, range_presets){
+    this.controller = $(element)
     this.range = range
     this.range_presets = range_presets
     this.start_value = value

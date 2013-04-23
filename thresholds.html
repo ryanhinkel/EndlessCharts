@@ -2,7 +2,7 @@
 <html lang='en'> 
 <head>
   <meta charset='utf-8' /> 
-  <title>charts</title>
+  <title>thresholds</title>
   <style type='text/css'>
 
     body {margin:0; padding: 0;font-size: 100%; font-family: Helvetica, Arial, 'san-serif';}
@@ -132,7 +132,7 @@
 
   $(document).ready(function(){
   
-    var thresholds = new Thresholds('.sensor_thresholds');
+    var thresholds = new Thresholds('#container');
 
     function tester(){
       var ar = $('.tester .slider').slider('values')
@@ -156,7 +156,7 @@
 
 <div id='container'>
 
-  <div class='sensor_thresholds'>    
+  <div style="display:none" class='sensor_thresholds'>    
     <h2>Left Outfield</h2>
 
     <div class='controller'>
@@ -164,7 +164,7 @@
       <div class="controller_slider slider"></div>
     </div>
 
-    <div class='range_key_container' style='display:none'></div>
+    
 
     
     <div class='moisture_threshold threshold'>
@@ -184,97 +184,6 @@
 
   </div>
 
-
-
-  <div class='sensor_thresholds'>    
-    <h2>Right Outfield</h2>
-
-    <div class='controller'>
-      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
-      <div class="controller_slider slider"></div>
-    </div>
-
-    <div class='range_key_container' style='display:none'></div>
-
-    
-    <div class='moisture_threshold threshold'>
-      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
-      <div class="moisture_slider slider"></div>
-    </div>
-
-    <div class='temperature_threshold threshold'>
-      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
-      <div class="temperature_slider slider"></div>
-    </div>
-
-    <div class='salinity_threshold threshold'>
-      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
-      <div class="salinity_slider slider"></div>
-    </div>
-
-  </div>
-  
-
-
-  <div class='sensor_thresholds'>      
-    <h2>Infield</h2>
-
-    <div class='controller'>
-      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
-      <div class="controller_slider slider"></div>
-    </div>
-
-    <div class='range_key_container' style='display:none'></div>
-
-    
-    <div class='moisture_threshold threshold'>
-      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
-      <div class="moisture_slider slider"></div>
-    </div>
-
-    <div class='temperature_threshold threshold'>
-      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
-      <div class="temperature_slider slider"></div>
-    </div>
-
-    <div class='salinity_threshold threshold'>
-      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
-      <div class="salinity_slider slider"></div>
-    </div>
-
-  </div>
-
-
-
-  <div class='sensor_thresholds'>    
-    
-    <h2>Infield Monitoring</h2>
-
-    <div class='controller monitoring'>
-      <input type="text" class="controller_below below" /><input type="text" class="controller_above above" />
-      <div class="controller_slider slider"></div>
-    </div>
-
-    <div class='range_key_container' style='display:none'></div>
-
-    
-    <div class='moisture_threshold threshold'>
-      <input type="text" class="moisture_below below" /><input type="text" class="moisture_above above" />
-      <div class="moisture_slider slider"></div>
-    </div>
-
-    <div class='temperature_threshold threshold'>
-      <input type="text" class="temperature_below below" /><input type="text" class="temperature_above above" />
-      <div class="temperature_slider slider"></div>
-    </div>
-
-    <div class='salinity_threshold threshold'>
-      <input type="text" class="salinity_below below" /><input type="text" class="salinity_above above" />
-      <div class="salinity_slider slider"></div>
-    </div>
-
-    
-  </div>
 
  
 

@@ -44,7 +44,8 @@
       chart.zoom_to($(this).attr('rel'));
     })
 
-    var sensors = [];
+    var sensors = [1,2,3];
+    chart.set_locations(sensors);
     $('.sensor').click(function(){
       var button = $(this);
       var id = button.attr('rel');
@@ -78,6 +79,9 @@
 <body> 
 
   <div id='sensors'>
+    <a id='sensor9' rel='9' class='sensor'>9</a>
+    <a id='sensor8' rel='8' class='sensor'>8</a>
+    <a id='sensor7' rel='7' class='sensor'>7</a>
     <a id='sensor6' rel='6' class='sensor'>6</a>
     <a id='sensor5' rel='5' class='sensor'>5</a>
     <a id='sensor4' rel='4' class='sensor'>4</a>

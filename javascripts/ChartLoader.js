@@ -15,7 +15,7 @@ var ChartLoader = Class.extend({
 
 
     // constants
-    this.BUFFER_SIZE = -100;
+    this.BUFFER_SIZE = -200;
     this.ZOOM_FACTOR = 3;
     this.ZOOM_BASE_RANGE = 1440;
     this.BASE_RES = 2;

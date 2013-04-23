@@ -70,7 +70,7 @@ var CCAL = Class.extend({
     if(label){
       var d = new Date(gx*60000);
       this.text([gx,this.limits.y[0]], d.toLocaleString(), 10, '#888', 'left', 'bottom', [4,-4])
-    }toLocaleString
+    }
   },
 
   h_line : function(gy, label){
